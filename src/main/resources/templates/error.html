@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Error')}"></head>
+<body class="center">
+<main class="card auth">
+  <h1>Something went wrong</h1>
+  <p class="muted">The page was not found or you do not have access to it.</p>
+  <a class="btn" th:href="@{/entries}">Back to my diary</a>
+</main>
+</body>
+</html>

@@ -1,0 +1,36 @@
+# Optional Render Blueprint: New + -> Blueprint -> select this repo.
+# Creates the web service AND the PostgreSQL database and links them.
+services:
+  - type: web
+    name: mydiary
+    runtime: docker
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DB_HOST
+        fromDatabase:
+          name: mydiary-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: mydiary-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: mydiary-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: mydiary-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: mydiary-db
+          property: password
+
+databases:
+  - name: mydiary-db
+    plan: free
+    region: oregon
