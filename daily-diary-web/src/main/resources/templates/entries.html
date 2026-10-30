@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('My entries')}"></head>
+<body>
+<header th:replace="~{fragments :: topbar}"></header>
+
+<main class="container">
+
+  <section class="stats">
+    <div class="card stat">
+      <span class="muted">Entries (7 days)</span>
+      <strong th:text="${stats.count}">0</strong>
+    </div>
+    <div class="card stat">
+      <span class="muted">Average mood</span>
+      <strong th:text="${#numbers.formatDecimal(stats.avgMood, 1, 1)}">0.0</strong>
+    </div>
+    <div class="card chart" aria-label="Mood over the last 7 days">
+      <div class="bar-col" th:each="d : ${stats.days}">
+        <div class="bar-wrap">
+          <div class="bar" th:style="'height:' + ${d.avg > 0 ? d.avg * 20 : 2} + '%'"
+               th:title="${#numbers.formatDecimal(d.avg, 1, 1)}"></div>
+        </div>
+        <small th:text="${d.label}">Mon</small>
+      </div>
+    </div>
+  </section>
+
+  <form class="card filters" th:action="@{/entries}" method="get">
+    <input type="search" name="q" th:value="${q}" placeholder="Search title or notes">
+    <select name="category">
+      <option value="">All categories</option>
+      <option th:each="c : ${categories}" th:value="${c}" th:text="${c}" th:selected="${c == category}"></option>
+    </select>
+    <label class="inline">From <input type="date" name="from" th:value="${from}"></label>
+    <label class="inline">To <input type="date" name="to" th:value="${to}"></label>
+    <button class="btn" type="submit">Filter</button>
+    <a class="btn ghost" th:href="@{/entries}">Reset</a>
+  </form>
+
+  <div class="row-between">
+    <h2>Entries</h2>
+    <a class="muted" th:href="@{/entries/export}">Download all (.txt)</a>
+  </div>
+
+  <p class="card muted" th:if="${#lists.isEmpty(entries)}">No entries found. Tap the + button to add your first one.</p>
+
+  <article class="card entry" th:each="e : ${entries}">
+    <div class="row-between">
+      <span class="muted" th:text="${e.entryDate}">2026-01-01</span>
+      <span class="chip" th:text="${e.category}">Task</span>
+    </div>
+    <h3 th:text="${e.title}">Title</h3>
+    <p class="mood" th:text="${#strings.repeat('★', e.mood)} + ${#strings.repeat('☆', 5 - e.mood)}">★★★☆☆</p>
+    <p class="preview" th:text="${#strings.abbreviate(e.content, 160)}">Notes</p>
+    <div class="actions">
+      <a class="btn small" th:href="@{/entries/{id}/edit(id=${e.id})}">Edit</a>
+      <form th:action="@{/entries/{id}/delete(id=${e.id})}" method="post"
+            onsubmit="return confirm('Delete this entry?')">
+        <button class="btn small danger" type="submit">Delete</button>
+      </form>
+    </div>
+  </article>
+</main>
+
+<a class="fab" th:href="@{/entries/new}" aria-label="New entry">+</a>
+</body>
+</html>
