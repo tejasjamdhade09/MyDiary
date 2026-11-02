@@ -21,7 +21,7 @@ import java.util.List;
 @Controller
 public class DiaryController {
     private static final List<String> CATEGORIES =
-            List.of("Meeting", "Task", "Learning", "Idea", "Review", "Other");
+            List.of("Meeting", "Task", "Learning", "Idea", "Review","Daily Routing", "Other");
 
     private final DiaryService service;
 
